@@ -1,6 +1,7 @@
 <template>
   
-  <CriarUser/>
+  <CriarUser></CriarUser>
+  <router-view></router-view>
 </template>
 
 <script>
