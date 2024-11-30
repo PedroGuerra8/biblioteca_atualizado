@@ -1,29 +1,57 @@
 <template>
-<div class="container" id="login-container">
+    <div class="container" id="login-container">
       <h1>Login</h1>
-      <form id="login-form">
-        <div class="form-group">
-          <label for="username">Usuário:</label>
-          <input type="text" id="username" name="username" required />
-        </div>
-        <div class="form-group">
-          <label for="password">Senha:</label>
-          <input type="password" id="password" name="password" required />
-        </div>
-        <button type="submit">Entrar</button>
-      </form>
+        <form @submit.prevent="handleLogin">
+            <div class="form-group">
+                <label for="username">Usuário:</label>
+                <input v-model="username" type="text" id="username" name="username" required />
+            </div>
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input v-model="password" type="password" id="password" name="password" required />
+            </div>
+            <button type="submit">Entrar</button>
+        </form>
+
       <div class="toggle-link">
         <p>
           Ainda não tem uma conta?
         <router-link to="/criar" id="show-signup">Crie uma conta</router-link>
         </p>
-      </div>
+        </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
 
+export default {
+  data() {
+    return {
+      username: '',
+      password: '',
+    };
+  },
+  methods: {
+    async handleLogin() {
+      try {
+        const response = await axios.post('http://localhost:4000/auth/login', {
+          username: this.username,
+          password: this.password,
+        });
+
+        const token = response.data.token; // Supondo que o backend retorna um JWT
+        localStorage.setItem('authToken', token); // Armazena o token no navegador
+        alert('Login realizado com sucesso!');
+        this.$router.push('/home'); // Redireciona para a página principal
+      } catch (error) {
+        alert('Erro ao fazer login: ' + error.response?.data?.message || 'Erro desconhecido');
+      }
+    },
+  },
+};
 </script>
+
 
 <style scoped>
 * {

@@ -1,26 +1,21 @@
 <template>
     <div class="container">
       <h1>Criar Conta</h1>
-      <form id="signup-form">
-        <div class="form-group">
-          <label for="username">Usuário:</label>
-          <input type="text" id="username" name="username" required />
-        </div>
-        <div class="form-group">
-          <label for="password">Senha:</label>
-          <input type="password" id="password" name="password" required />
-        </div>
-        <div class="form-group">
-          <label for="confirm-password">Confirme a Senha:</label>
-          <input
-            type="password"
-            id="confirm-password"
-            name="confirm-password"
-            required
-          />
-        </div>
-        <button type="submit">Criar Conta</button>
-      </form>
+            <form @submit.prevent="handleSignup">
+                <div class="form-group">
+                    <label for="username">Usuário:</label>
+                    <input v-model="username" type="text" id="username" name="username" required />
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input v-model="password" type="password" id="password" name="password" required />
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirme a Senha:</label>
+                    <input v-model="confirmPassword" type="password" id="confirmPassword" name="confirmPassword" required />
+                </div>
+                <button type="submit">Criar Conta</button>
+            </form>
       <div class="toggle-link">
         <p>Já tem uma conta? <router-link to="/login" class="opcao-menu">Faça login</router-link></p>
       </div>
@@ -28,8 +23,40 @@
 </template>
 
 <script>
+import axios from 'axios';
 
+export default {
+  data() {
+    return {
+      username: '',
+      password: '',
+      confirmPassword: '',
+    };
+  },
+  methods: {
+    async handleSignup() {
+      if (this.password !== this.confirmPassword) {
+        alert('As senhas não coincidem!');
+        return;
+      }
+
+      try {
+        const response = await axios.post('http://localhost:4000/auth/signup', {
+          username: this.username,
+          password: this.password,
+        });
+
+        alert('Conta criada com sucesso!');
+        this.$router.push('/login'); // Redireciona para a página de login
+      } catch (error) {
+        alert('Erro ao criar conta: ' + error.response?.data?.message || 'Erro desconhecido');
+      }
+    },
+  },
+};
 </script>
+
+
 
 <style scoped>
     * {
