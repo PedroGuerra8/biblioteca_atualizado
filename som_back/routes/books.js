@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const bookSchema = require("../models/books");
-const books = require('../models/books');
+const Book = require('../models/books');  // Importação do modelo corretamente
 
 // Rota GET para listar todos os livros
 router.get('/', async (req, res) => {
     try {
-        const books = await bookSchema.find();  // Consulta todos os livros
+        const books = await Book.find();  // Consulta todos os livros
         res.status(200).json(books);  // Envia os livros como resposta
     } catch (error) {
         console.error('Erro ao buscar livros:', error);
@@ -14,18 +13,22 @@ router.get('/', async (req, res) => {
     }
 });
 
-// POST /books
+// POST /books - Criação de livro
 router.post('/', async (req, res) => {
     const { title, author, year, image } = req.body;
-    console.log(title, author, year,);
     
     // Validação simples dos dados
     if (!title || !author || !year) {
         return res.status(400).json({ error: 'Título, autor e ano são obrigatórios' });
     }
 
+    // Verificando se o ano é um número válido
+    if (isNaN(year)) {
+        return res.status(400).json({ error: 'Ano inválido, deve ser um número' });
+    }
+
     try {
-        const newBook = new bookSchema({ title, author, year, image });
+        const newBook = new Book({ title, author, year, image });
         await newBook.save();
         res.status(201).json({ message: 'Livro criado com sucesso!', book: newBook });
     } catch (error) {   
@@ -34,13 +37,13 @@ router.post('/', async (req, res) => {
     }
 });
 
-// PUT /books/:id
+// PUT /books/:id - Atualizar livro
 router.put('/:id', async (req, res) => {
     const { title, author, year, image } = req.body;
 
     // Criação de um objeto com os campos a serem atualizados
     const updatedFields = {};
-    
+
     // Verificando se cada campo foi enviado e adicionando ao objeto de atualização
     if (title) updatedFields.title = title;
     if (author) updatedFields.author = author;
@@ -48,7 +51,7 @@ router.put('/:id', async (req, res) => {
     if (image) updatedFields.image = image;
 
     try {
-        const updatedBook = await bookSchema.findByIdAndUpdate(
+        const updatedBook = await Book.findByIdAndUpdate(
             req.params.id,
             { $set: updatedFields }, // Atualiza somente os campos que foram enviados
             { new: true }
@@ -67,11 +70,10 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-
-// DELETE /books/:id
+// DELETE /books/:id - Deletar livro
 router.delete('/:id', async (req, res) => {
     try {
-        const deletedBook = await bookSchema.findByIdAndDelete(req.params.id);  // Deleta o livro com o id fornecido
+        const deletedBook = await Book.findByIdAndDelete(req.params.id);  // Deleta o livro com o id fornecido
 
         if (!deletedBook) {
             return res.status(404).json({ message: 'Livro não encontrado' });  // Caso o livro não exista

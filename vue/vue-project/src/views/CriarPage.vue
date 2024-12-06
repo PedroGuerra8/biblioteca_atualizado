@@ -23,7 +23,9 @@
 </template>
 
 <script>
+
 import axios from 'axios';
+import HomePageVue from './HomePage.vue';
 
 export default {
   data() {
@@ -41,13 +43,15 @@ export default {
       }
 
       try {
-        const response = await axios.post('http://localhost:4000/auth/signup', {
+        const response = await axios.post('http://localhost:4000/api/user/criar', {
           username: this.username,
           password: this.password,
-        });
+        }).then(() =>{
+          alert('Conta criada com sucesso!');
+          this.$router.go('/home'); // Redireciona para a página de login
+        })
 
-        alert('Conta criada com sucesso!');
-        this.$router.push('/login'); // Redireciona para a página de login
+      
       } catch (error) {
         alert('Erro ao criar conta: ' + error.response?.data?.message || 'Erro desconhecido');
       }

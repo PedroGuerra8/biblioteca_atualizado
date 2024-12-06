@@ -3,24 +3,21 @@ const mongoose = require('mongoose');
 const bookSchema = new mongoose.Schema({
     title: { 
         type: String, 
-        required: false
+        required: true // Definido como obrigatório, pode ser ajustado conforme necessidade
     },
     author: { 
         type: String, 
-        required: false 
+        required: true // Definido como obrigatório
     },
     year: { 
-        type: Date, 
-        required: false 
+        type: Number, // Melhor utilizar como Number, ou use Date se for o caso
+        required: true 
     },
     image: { 
         type: String, 
-        required: false
+        required: false // Campo opcional
     },
-
-}, { timestamps: true });
+}, 
+{ timestamps: true });
 
 module.exports = mongoose.model('Book', bookSchema);
-
-
-
