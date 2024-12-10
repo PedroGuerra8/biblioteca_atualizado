@@ -1,26 +1,22 @@
 const express = require('express');
-require('dotenv').config();
+require('dotenv').config(); // Carrega variáveis de ambiente
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const multer = require('multer');
-const connectDB = require('./config/db');  // Certifique-se de que a importação só aconteça uma vez
-const booksRoutes = require('./routes/books');
-const usersRoutes = require('./routes/user');
-const path = require('path');
-
-const MONGO_URI = process.env.MONGO_URI; // Obtém a string de conexão do .env
-
-// Conectando ao MongoDB usando a função connectDB
-connectDB();  // Chama a função connectDB para conectar ao banco de dados
+const connectDB = require('./config/db'); // Função para conectar ao MongoDB
+const booksRoutes = require('./routes/books'); // Importa as rotas de livros
+const usersRoutes = require('./routes/user'); // Importa as rotas de usuários
 
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000; // Usa a porta definida no .env ou 4000 como padrão
 
-// Middleware para interpretar JSON
-app.use(express.json());
+// Conectar ao banco de dados
+connectDB();
 
+// Middlewares
 app.use(cors());
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Rotas
 app.use('/api/books', booksRoutes); // Rota de livros

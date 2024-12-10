@@ -6,10 +6,10 @@
      <aside class="sidebar">
        <h2>Menu</h2>
        <ul>
-          <li><router-link to="/" class="opcao-menu">Home</router-link></li>
+          <li><router-link to="/home" class="opcao-menu">Home</router-link></li>
           <li><router-link to="/login" class="opcao-menu">Login</router-link></li>
           <li><router-link to="/criar" class="opcao-menu">Criar</router-link></li>
-          <li><router-link to="/cadastro" class="opcao-menu">Cadastro de Livros</router-link></li>
+          <li><router-link to="/cadastro-livro" class="opcao-menu">Cadastro de Livros</router-link></li>
        </ul>
      </aside>
      <main>

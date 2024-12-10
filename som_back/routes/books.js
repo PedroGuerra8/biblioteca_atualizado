@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Book = require('../models/books');  // Importação do modelo corretamente
+const bookController = require('../controllers/bookController')
 
 // Rota GET para listar todos os livros
 router.get('/', async (req, res) => {
@@ -85,5 +86,12 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ message: 'Erro ao deletar livro', error });  // Em caso de erro no banco de dados
     }
 });
+
+
+// Rotas de gerenciamento de livros
+router.post('/', bookController.createBook); // Criar livro
+router.get('/', bookController.getBooks); // Listar todos os livros
+router.put('/:id', bookController.updateBook); // Atualizar livro por ID
+router.delete('/:id', bookController.deleteBook); // Deletar livro por ID
 
 module.exports = router;

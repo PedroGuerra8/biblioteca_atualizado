@@ -25,13 +25,19 @@ const router = createRouter({
       component: CriarPage, // Componente importado diretamente
     },
     {
-      path: '/cadastro',
+      path: '/cadastro-livro',
       name: 'cadastro',
       component: CadastroLivroPage, // Componente importado diretamente
     },
     {
       path: '/',
       redirect: '/criar', // Redireciona para a página de criação de conta
+    },
+    {
+      path: '/editar-livro/:id',
+      name: 'editar-livro',
+      component: () => import('../components/icons/EditarLivroPage.vue'),
+      meta: { requiresAuth: true },
     },
   ],
 });
