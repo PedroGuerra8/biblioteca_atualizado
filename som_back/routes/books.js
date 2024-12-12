@@ -3,6 +3,68 @@ const router = express.Router();
 const Book = require('../models/books');  // Importação do modelo corretamente
 const bookController = require('../controllers/bookController')
 
+const multer = require("multer");
+const path = require("path");
+
+// Configuração de armazenamento
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Defina o diretório onde os arquivos serão salvos
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+// Middleware do multer
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png/;
+    const mimetype = filetypes.test(file.mimetype);
+
+    if (mimetype) {
+      cb(null, true);
+    } else {
+      cb(new Error("Formato de arquivo inválido. Apenas JPEG e PNG são permitidos."));
+    }
+  },
+  limits: { fileSize: 1024 * 1024 * 2 }, // Limite de 2MB
+});
+
+router.post(
+  "/",
+  upload.single("image"), // "image" deve ser o nome do campo do arquivo no formulário
+  async (req, res) => {
+
+    const { title, author, year, image } = req.body;
+       
+    // Validação simples dos dados
+    if (!title || !author || !year) {
+        return res.status(400).json({ error: 'Título, autor e ano são obrigatórios' });
+    }
+
+    // Verificando se o ano é um número válido
+    if (isNaN(year)) {
+        return res.status(400).json({ error: 'Ano inválido, deve ser um número' });
+    }
+
+    try {
+        const newBook = new Book({
+            title,
+            author,
+            year,
+            image: req.file?.path, // Certifique-se de usar o caminho do arquivo corretamente
+          });
+        await newBook.save();
+        res.status(201).json({ message: 'Livro criado com sucesso!', book: newBook });
+    } catch (error) {   
+        console.error('Erro ao salvar livro:', error);
+        res.status(500).json({ error: 'Erro ao salvar livro no banco de dados' });
+    }
+  }
+);
+
 // Rota GET para listar todos os livros
 router.get('/', async (req, res) => {
     try {
@@ -17,6 +79,7 @@ router.get('/', async (req, res) => {
 // POST /books - Criação de livro
 router.post('/', async (req, res) => {
     const { title, author, year, image } = req.body;
+    console.log(title, author, year, image);
     
     // Validação simples dos dados
     if (!title || !author || !year) {

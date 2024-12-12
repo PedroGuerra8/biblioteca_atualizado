@@ -1,7 +1,7 @@
 <template>
-  <!-- <header>
+  <header>
      <h1>Library Mange</h1>
-   </header> -->
+  </header>
    <div class="container">
      <aside class="sidebar">
        <h2>Menu</h2>
@@ -13,6 +13,28 @@
        </ul>
      </aside>
      <main>
+       <section class="book-list">
+		<!-- Barra de pesquisa -->
+        		<div class="search-container">
+          		<input
+            		type="text"
+            		v-model="searchQuery"
+            		placeholder="Pesquisar livros pelo nome..."
+            		class="search-bar"
+          		/>
+        		</div>
+
+        		<div class="books">
+          		<div class="book"
+            		v-for="book in filteredBooks"
+            		:key="book.title">
+            		<!-- <img :src="{{ book.image }}"   :alt="book.title" /> -->
+            		<h3>{{ book.title }}</h3>
+            		<p>Autor: {{ book.author }}</p>
+            		<p>Descrição breve sobre o livro.</p>
+          		</div>
+        		</div>
+      	</section>  
        <section class="book-list">
          <h2>Catálogo</h2>
          <div class="books">
@@ -60,7 +82,7 @@
            </div>
            <div class="book">
              <img src="../assets/img/o_poder_do_habito.png" alt="O Poder do Hábito" />
-             <h3>O</h3>
+             <h3>O Poder do Hábito</h3>
              <p>Autor: George S. Clason</p>
              <p>Descrição breve sobre o livro.</p>
            </div>
@@ -74,48 +96,57 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
+  
   data() {
     return {
-      title: '',
-      author: '',
-      year: '',
-      coverImage: null,
+      searchQuery: '', // Texto digitado na barra de pesquisa
+      books: [
+        {
+          title: 'Café com Deus Pai',
+          author: 'Júnior Rostirola',
+          image: '../assets/img/café_com_Deus_Pai.png',
+        },
+        {
+          title: 'A Mente Moralista',
+          author: 'Jonathan Haidt',
+          image: '../assets/img/a_mente_moralista.png',
+        },
+        {
+          title: 'O Pequeno Príncipe',
+          author: 'Antoine de Saint-Exupéry',
+          image: '../assets/img/o_pequeno_principe.png',
+        },
+        {
+          title: 'Os Segredos da Mente Milionária',
+          author: 'T. Harv Eker',
+          image: '../assets/img/os_segredos_da_mente_milionaria.png',
+        },
+        {
+          title: 'Hábitos Atômicos',
+          author: 'James Clear',
+          image: '../assets/img/habitos_atomicos.png',
+        },
+        {
+          title: 'O Homem mais Rico da Babilônia',
+          author: 'George S. Clason',
+          image: '../assets/img/o_homem_mais_rico_da_babilonia.png',
+        },
+        {
+          title: 'O Poder do Hábito',
+          author: 'Charles Duhigg',
+          image: '../assets/img/o_poder_do_habito.png',
+        },
+      ],
     };
   },
-  methods: {
-    handleFileUpload(event) {
-      this.coverImage = event.target.files[0];
+  computed: {
+    filteredBooks() {
+      // Filtra os livros com base no texto da barra de pesquisa
+      return this.books.filter((book) =>
+        book.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
     },
-    async enviarFormulario() {
-      const formData = new FormData();
-      formData.append('title', this.title);
-      formData.append('author', this.author);
-      formData.append('year', this.year);
-
-      if (this.coverImage) {
-        formData.append('coverImage', this.coverImage);
-      }
-
-      try {
-        const response = await axios.post('http://localhost:4000/api/books', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        console.log('Livro adicionado:', response.data);
-        alert('Livro cadastrado com sucesso!');
-        this.$router.push('/admlivros');
-      } catch (error) {
-        console.error('Erro ao adicionar livro:', error);
-        alert('Erro ao cadastrar o livro.');
-      }
-    },
-    cancelarEnvio() {
-      this.$router.push('/admlivros');
-    }
   },
 };
 </script>
@@ -136,13 +167,13 @@ body {
    min-height: 100vh;
 }
 
-header {
-   background: #0982c9;
-   color: #fff;
-   padding: 20px;
-   text-align: center;
-   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
+header { 
+  background: #09a3c9; 
+  color: #fff; 
+  padding: 20px; 
+  text-align: center; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 5px 10px rgba(0, 0, 0, 0.4); 
+  transition: box-shadow 0.3s ease-in-out; }
 
 .container {
    display: flex; /* Flexbox para o layout */

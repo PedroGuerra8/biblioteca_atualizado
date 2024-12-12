@@ -21,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Rotas
 app.use('/api/books', booksRoutes); // Rota de livros
 app.use('/api/user', usersRoutes);  // Rota de usuários
+app.use("/uploads", express.static("uploads"));
 
 // Inicia o servidor
 app.listen(PORT, () => {
