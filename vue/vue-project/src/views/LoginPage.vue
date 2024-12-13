@@ -53,7 +53,7 @@ export default {
         });
 
         // Verifica se a resposta contém o token
-        if (response.data && response.data.token) {
+        if (response.data ) {
           // Armazena o token no localStorage
           localStorage.setItem("authToken", response.data.token);
 

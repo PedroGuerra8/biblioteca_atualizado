@@ -3,7 +3,7 @@ const router = express.Router();
 const bookController = require('../controllers/bookController');
 const multer = require('multer');
 const path = require('path');
-const verifyToken = require('../middleware/authMiddleware');
+
 
 // Configuração do multer para upload de imagens
 const storage = multer.diskStorage({
@@ -32,20 +32,20 @@ const upload = multer({
 // Rotas do CRUD de livros
 router.post(
     '/',
-    verifyToken, // Middleware para autenticação
+     // Middleware para autenticação
     upload.single('image'), // Middleware para upload de imagem
     bookController.createBook
 );
 
-router.get('/', bookController.getBooks); // Listar todos os livros
+router.get('/', bookController.getAllBooks); // Listar todos os livros
 
 router.put(
     '/:id',
-    verifyToken,
+    
     upload.single('image'), // Middleware para upload de imagem (caso seja enviada na atualização)
     bookController.updateBook
 );
 
-router.delete('/:id', verifyToken, bookController.deleteBook); // Deletar livro por ID
+router.delete('/:id',  bookController.deleteBook); // Deletar livro por ID
 
 module.exports = router;
