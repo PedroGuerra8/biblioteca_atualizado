@@ -1,26 +1,48 @@
+// routes/user.js
 const express = require('express');
-const authController = require('../controllers/authController');
 const User = require('../models/user');
 const router = express.Router();
 
 // REGISTRO DE USUÁRIO
-router.post('/criar', authController.register);
+router.post('/criar', async (req, res) => {
+    const { username, password } = req.body;
+    
+    try {
+        const user = new User({ username, password });
+        await user.save();
+        res.status(201).json({ message: 'Usuário registrado com sucesso!', user });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao registrar usuário', error });
+    }
+});
 
 // LOGIN DO USUÁRIO
-router.post('/login', authController.login);
+router.post('/login', async (req, res) => {
+    const { username, password } = req.body;
 
-// LISTAR TODOS OS USUÁRIOS (GET /user)
+    try {
+        const user = await User.findOne({ username, password });
+        if (!user) {
+            return res.status(400).json({ message: 'Credenciais inválidas' });
+        }
+        res.status(200).json({ message: 'Login bem-sucedido', user });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao fazer login', error });
+    }
+});
+
+// LISTAR TODOS OS USUÁRIOS
 router.get('/', async (req, res) => {
     try {
-        const users = await User.find(); // Consulta todos os usuários
-        res.status(200).json(users); // Envia os usuários como resposta
+        const users = await User.find();
+        res.status(200).json(users);
     } catch (error) {
         console.error('Erro ao buscar usuários:', error);
         res.status(500).json({ message: 'Erro ao buscar os usuários' });
     }
 });
 
-// ATUALIZAR UM USUÁRIO (PUT /user/:id)
+// ATUALIZAR UM USUÁRIO
 router.put('/:id', async (req, res) => {
     const { username, password } = req.body;
 
@@ -46,7 +68,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// DELETAR UM USUÁRIO (DELETE /user/:id)
+// DELETAR UM USUÁRIO
 router.delete('/:id', async (req, res) => {
     try {
         const deletedUser = await User.findByIdAndDelete(req.params.id);

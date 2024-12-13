@@ -24,7 +24,7 @@
   </template>
   
   <script>
-  import { getBooks, updateBook } from '../api/booksApi';
+  import { getBooks, updateBook } from '../../api/booksApi';
   
   export default {
     data() {
@@ -61,11 +61,13 @@
           year: this.year,
           image: this.image,
         };
-  
+        console.log(updatedData);
+        
         try {
-          await updateBook(this.bookId, updatedData);
+          // await updateBook(this.bookId, updatedData);
           alert('Livro atualizado com sucesso!');
-          this.$router.push({ name: 'home' }); // Redireciona após sucesso
+          // rthis.$router.push({ name: 'home' }); // Redireciona após sucesso
+          
         } catch (error) {
           alert('Erro ao atualizar livro');
         }

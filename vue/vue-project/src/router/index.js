@@ -5,6 +5,7 @@ import HomePage from '../views/HomePage.vue';
 import LoginPage from '../views/LoginPage.vue';
 import CriarPage from '../views/CriarPage.vue';
 import CadastroLivroPage from '../views/CadastroLivroPage.vue';
+import DashBoardPage from '@/views/DashBoardPage.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       name: 'editar-livro',
       component: () => import('../components/icons/EditarLivroPage.vue'),
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/dash',
+      name: 'dashboard',
+      component: DashBoardPage, // Componente importado diretamente
     },
   ],
 });
