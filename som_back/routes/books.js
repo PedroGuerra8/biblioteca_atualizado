@@ -2,24 +2,22 @@ const express = require('express');
 const router = express.Router();
 const bookController = require('../controllers/bookController');
 const multer = require('multer');
-const path = require('path');
-
 
 // Configuração do multer para upload de imagens
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, 'uploads/'); // Diretório onde as imagens serão salvas
     },
     filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
+        cb(null, `${Date.now()}-${file.originalname}`); // Nome único para cada arquivo
     },
 });
 
 const upload = multer({
     storage,
     fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png/;
-        const isValid = filetypes.test(file.mimetype);
+        const allowedTypes = /jpeg|jpg|png/; // Tipos de arquivo permitidos
+        const isValid = allowedTypes.test(file.mimetype);
         if (isValid) {
             cb(null, true);
         } else {
@@ -30,22 +28,25 @@ const upload = multer({
 });
 
 // Rotas do CRUD de livros
+
+// Criar livro (com upload de imagem)
 router.post(
     '/',
-     // Middleware para autenticação
     upload.single('image'), // Middleware para upload de imagem
     bookController.createBook
 );
 
-router.get('/', bookController.getAllBooks); // Listar todos os livros
+// Listar todos os livros
+router.get('/', bookController.getAllBooks);
 
+// Atualizar livro (com upload de imagem)
 router.put(
     '/:id',
-    
-    upload.single('image'), // Middleware para upload de imagem (caso seja enviada na atualização)
+    upload.single('image'), // Middleware para upload de imagem (opcional)
     bookController.updateBook
 );
 
-router.delete('/:id',  bookController.deleteBook); // Deletar livro por ID
+// Deletar livro por ID
+router.delete('/:id', bookController.deleteBook);
 
 module.exports = router;
